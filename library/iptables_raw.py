@@ -344,7 +344,7 @@ class Iptables:
     def _is_debian(self):
         return os.path.isfile('/etc/debian_version')
 
-    # If /etc/arch-release exist, this means this is an ArchLinux OS 
+    # If /etc/arch-release exist, this means this is an ArchLinux OS
     def _is_arch_linux(self):
         return os.path.isfile('/etc/arch-release')
 
