@@ -11,6 +11,7 @@
     name: firewalld
     state: stopped
     enabled: no
+  when: iptables_raw_disable_firewalld | default(True)
 
 - name: iptables-raw | enable iptables
   service:

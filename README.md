@@ -10,6 +10,13 @@ See these links for full documentation on the `iptables_raw` module:
 - https://github.com/ansible/ansible/pull/21054
 
 
+Parameters
+----------
+
+Optional:
+- `iptables_raw_disable_firewalld`: Disable the firewalld service (if installed and enabled it will conflict), default `True`
+
+
 Development
 -----------
 The [`library/iptables_raw.py`](library/iptables_raw.py) version is https://github.com/Nordeus/ansible_iptables_raw/tree/34672590224f393016ad086f82054319108e67ad (2018-02-18) with the following change to prevent ansible-lint/flake8 failing:

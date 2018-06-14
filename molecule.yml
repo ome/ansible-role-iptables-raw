@@ -1,8 +1,9 @@
 ---
 dependency: []
 
+# This doesn't run in Docker because iptables is required
 driver:
-  name: vagrant
+  name: docker
 
 vagrant:
   platforms:
@@ -17,8 +18,22 @@ vagrant:
   instances:
     - name: iptables-raw
 
+docker:
+  containers:
+  - name: iptables-raw
+    image: centos/systemd
+    image_version: latest
+    privileged: True
+    ansible_groups:
+    - docker-hosts
+
 ansible:
   diff: True
+
+  group_vars:
+    docker-hosts:
+      # firewalld is not installed
+      iptables_raw_disable_firewalld: False
 
 verifier:
   name: testinfra
