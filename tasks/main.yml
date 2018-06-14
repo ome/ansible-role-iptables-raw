@@ -2,11 +2,13 @@
 # tasks file for iptables-raw
 
 - name: iptables-raw | install iptables services
+  become: yes
   yum:
     name: iptables-services
     state: present
 
 - name: iptables-raw | disable firewalld
+  become: yes
   service:
     name: firewalld
     state: stopped
@@ -14,6 +16,7 @@
   when: iptables_raw_disable_firewalld | default(True)
 
 - name: iptables-raw | enable iptables
+  become: yes
   service:
     name: iptables
     state: started
