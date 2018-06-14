@@ -2,8 +2,9 @@ Iptables Raw
 ============
 
 Import the Iptables Raw library and make it available as a task.
+Ensure iptables is active.
 
-See these links for full documentation:
+See these links for full documentation on the `iptables_raw` module:
 - https://nordeus.com/blog/engineering/managing-iptables-with-ansible-the-easy-way/
 - https://github.com/Nordeus/ansible_iptables_raw
 - https://github.com/ansible/ansible/pull/21054

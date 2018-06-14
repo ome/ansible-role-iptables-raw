@@ -22,3 +22,6 @@
         -A FORWARD -j REJECT
         -A OUTPUT -j ACCEPT
       state: present
+
+  # TODO: For a full test we should reboot and check the iptables rules
+  # are still active
