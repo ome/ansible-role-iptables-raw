@@ -1,0 +1,24 @@
+---
+dependency: []
+
+driver:
+  name: vagrant
+
+vagrant:
+  platforms:
+    - name: centos7
+      box: centos/7
+  providers:
+    - name: virtualbox
+      type: virtualbox
+      options:
+        memory: 512
+        cpus: 1
+  instances:
+    - name: iptables-raw
+
+ansible:
+  diff: True
+
+verifier:
+  name: testinfra
