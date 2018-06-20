@@ -10,7 +10,7 @@
   # - block http outbound
   # - allow all other outbound
   - name: Create iptables test rules
-    iptables_raw:
+    iptables_raw_25:
       name: test_rules
       keep_unmanaged: no
       rules: |
