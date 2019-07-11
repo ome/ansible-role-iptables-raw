@@ -1,6 +1,9 @@
 Iptables Raw
 ============
 
+[![Build Status](https://travis-ci.org/ome/ansible-role-iptables-raw.svg)](https://travis-ci.org/ome/ansible-role-iptables-raw)
+[![Ansible Role](https://img.shields.io/ansible/role/41999.svg)](https://galaxy.ansible.com/ome/iptables_raw/)
+
 Import the Iptables Raw library and make it available as a task.
 Ensure iptables is active.
 
@@ -43,11 +46,11 @@ Example Playbook
 
     - hosts: localhost
       roles:
-        - role: iptables-raw
+        - role: ome.iptables-raw
 
       tasks:
         # Block all incoming connections apart from ssh
-        - iptables_raw:
+        - ome.iptables_raw:
             name: test_rules
             keep_unmanaged: no
             rules: |
