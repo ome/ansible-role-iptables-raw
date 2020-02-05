@@ -7,13 +7,19 @@
     name: iptables-services
     state: present
 
+- name: iptables-raw | get list of services
+  become: yes
+  service_facts:
+
 - name: iptables-raw | disable firewalld
   become: yes
   service:
     name: firewalld
     state: stopped
     enabled: no
-  when: iptables_raw_disable_firewalld | default(True)
+  when: >-
+    (iptables_raw_disable_firewalld | default(True)) and
+    'firewalld' in ansible_facts.services
 
 - name: iptables-raw | enable iptables
   become: yes

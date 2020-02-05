@@ -30,10 +30,5 @@ docker:
 ansible:
   diff: True
 
-  group_vars:
-    docker-hosts:
-      # firewalld is not installed
-      iptables_raw_disable_firewalld: False
-
 verifier:
   name: testinfra
