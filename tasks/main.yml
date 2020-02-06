@@ -2,22 +2,28 @@
 # tasks file for iptables-raw
 
 - name: iptables-raw | install iptables services
-  become: yes
+  become: true
   yum:
     name: iptables-services
     state: present
 
+- name: iptables-raw | get list of services
+  become: true
+  service_facts:
+
 - name: iptables-raw | disable firewalld
-  become: yes
+  become: true
   service:
     name: firewalld
     state: stopped
-    enabled: no
-  when: iptables_raw_disable_firewalld | default(True)
+    enabled: false
+  when: >-
+    (iptables_raw_disable_firewalld | default(True)) and
+    'firewalld' in ansible_facts.services
 
 - name: iptables-raw | enable iptables
-  become: yes
+  become: true
   service:
     name: iptables
     state: started
-    enabled: yes
+    enabled: true
