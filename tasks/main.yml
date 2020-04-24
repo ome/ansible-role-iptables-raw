@@ -18,8 +18,10 @@
     state: stopped
     enabled: false
   when: >-
-    (iptables_raw_disable_firewalld | default(True)) and
-    'firewalld' in ansible_facts.services
+    (iptables_raw_disable_firewalld | default(True)) and (
+      ('firewalld' in ansible_facts.services) or
+      ('firewalld.service' in ansible_facts.services)
+    )
 
 - name: iptables-raw | enable iptables
   become: true
