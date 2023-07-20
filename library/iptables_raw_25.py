@@ -25,6 +25,16 @@ You should have received a copy of the GNU General Public License
 along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.basic import json
+
+import time
+import fcntl
+import re
+import shlex
+import os
+import tempfile
+
 ANSIBLE_METADATA = {
     'metadata_version': '1.1',
     'status': ['preview'],
@@ -202,16 +212,6 @@ keep_unmanaged:
     type: boolean
     sample: True
 '''
-
-from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.basic import json
-
-import time
-import fcntl
-import re
-import shlex
-import os
-import tempfile
 
 try:
     from collections import defaultdict
