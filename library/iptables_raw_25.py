@@ -257,7 +257,7 @@ def compare_dictionaries(dict1, dict2):
     dicts_are_equal = True
     for key in dict1.keys():
         if isinstance(dict1[key], dict):
-            dicts_are_equal = dicts_are_equal and compare_dictionaries(dict1[key], dict2[key])
+            dicts_are_equal = dicts_are_equal and compare_dictionaries(dict1[key], dict2[key]) # noqa
         else:
             dicts_are_equal = dicts_are_equal and (dict1[key] == dict2[key])
         if not dicts_are_equal:
@@ -285,7 +285,8 @@ class Iptables:
     # Key used for unmanaged rules
     UNMANAGED_RULES_KEY_NAME = '$unmanaged_rules$'
 
-    # Only allow alphanumeric characters, underscore, hyphen, dots, or a space for
+    # Only allow alphanumeric characters, underscore, hyphen, dots,
+    # or a space for
     # now. We don't want to have problems while parsing comments using regular
     # expressions.
     RULE_NAME_ALLOWED_CHARS = 'a-zA-Z0-9_ .-'
@@ -311,7 +312,7 @@ class Iptables:
         self._refresh_active_rules(table='*')
 
     def __eq__(self, other):
-        return (isinstance(other, self.__class__) and compare_dictionaries(other.state_dict, self.state_dict))
+        return (isinstance(other, self.__class__) and compare_dictionaries(other.state_dict, self.state_dict)) # noqa
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -319,12 +320,12 @@ class Iptables:
     def _get_bins(self, ipversion):
         if ipversion == '4':
             return {'iptables': Iptables.module.get_bin_path('iptables'),
-                    'iptables-save': Iptables.module.get_bin_path('iptables-save'),
-                    'iptables-restore': Iptables.module.get_bin_path('iptables-restore')}
+                    'iptables-save': Iptables.module.get_bin_path('iptables-save'), # noqa
+                    'iptables-restore': Iptables.module.get_bin_path('iptables-restore')} # noqa
         else:
             return {'iptables': Iptables.module.get_bin_path('ip6tables'),
-                    'iptables-save': Iptables.module.get_bin_path('ip6tables-save'),
-                    'iptables-restore': Iptables.module.get_bin_path('ip6tables-restore')}
+                    'iptables-save': Iptables.module.get_bin_path('ip6tables-save'), # noqa
+                    'iptables-restore': Iptables.module.get_bin_path('ip6tables-restore')} # noqa
 
     def _get_iptables_names_file(self, ipversion):
         if ipversion == '4':
@@ -340,7 +341,8 @@ class Iptables:
         else:
             return []
 
-    # If /etc/debian_version exist, this means this is a debian based OS (Ubuntu, Mint, etc...)
+    # If /etc/debian_version exist, this means this is a
+    # debian based OS (Ubuntu, Mint, etc...)
     def _is_debian(self):
         return os.path.isfile('/etc/debian_version')
 
@@ -401,9 +403,9 @@ class Iptables:
                 # CentOS 5 ip6tables (v1.3.x) doesn't support comments,
                 # which means it cannot be used with this module.
                 if StrictVersion(version) < StrictVersion('1.4'):
-                    Iptables.module.fail_json(msg="This module isn't compatible with ip6tables versions older than 1.4.x")
+                    Iptables.module.fail_json(msg="This module isn't compatible with ip6tables versions older than 1.4.x") # noqa
         else:
-            Iptables.module.fail_json(msg="Could not fetch iptables version! Is iptables installed?")
+            Iptables.module.fail_json(msg="Could not fetch iptables version! Is iptables installed?") # noqa
 
     # Read rules from the json state file and return a dict.
     def _read_state_file(self):
@@ -412,11 +414,11 @@ class Iptables:
             try:
                 json_str = open(self.state_save_path, 'r').read()
             except:
-                Iptables.module.fail_json(msg="Could not read the state file '%s'!" % self.state_save_path)
+                Iptables.module.fail_json(msg="Could not read the state file '%s'!" % self.state_save_path) # noqa
         try:
-            read_dict = defaultdict(lambda: dict(dump='', rules_dict={}), json.loads(json_str))
+            read_dict = defaultdict(lambda: dict(dump='', rules_dict={}), json.loads(json_str)) # noqa
         except:
-            Iptables.module.fail_json(msg="Could not parse the state file '%s'! Please manually delete it to continue." % self.state_save_path)
+            Iptables.module.fail_json(msg="Could not parse the state file '%s'! Please manually delete it to continue." % self.state_save_path) # noqa
         return read_dict
 
     # Checks if a table exists in the state_dict.
@@ -440,21 +442,25 @@ class Iptables:
             except IOError:
                 i += 1
                 time.sleep(1)
-        Iptables.module.fail_json(msg="Could not acquire lock to continue execution! "
-                                      "Probably another instance of this module is running.")
+        Iptables.module.fail_json(msg="Could not acquire lock to "
+                                      "continue execution! "
+                                      "Probably another instance "
+                                      "of this module is running.")
 
-    # Check if a table has anything to flush (to check all tables pass table='*').
+    # Check if a table has anything to flush
+    # (to check all tables pass table='*').
     def table_needs_flush(self, table):
         needs_flush = False
         if table == '*':
             for tbl in Iptables.TABLES:
-                # If the table exists or if it needs to be flushed that means will make changes.
-                if self._has_table(tbl) or self._single_table_needs_flush(tbl):
+                # If the table exists or if it needs
+                # to be flushed that means will make changes.
+                if self._has_table(tbl) or self._single_table_needs_flush(tbl): # noqa
                     needs_flush = True
                     break
         # Only flush the specified table
         else:
-            if self._has_table(table) or self._single_table_needs_flush(table):
+            if self._has_table(table) or self._single_table_needs_flush(table): # noqa
                 needs_flush = True
         return needs_flush
 
@@ -463,7 +469,7 @@ class Iptables:
         needs_flush = False
         active_rules = self._get_active_rules(table)
         if active_rules:
-            policies = self._filter_default_chain_policies(active_rules, table)
+            policies = self._filter_default_chain_policies(active_rules, table) # noqa
             chains = self._filter_custom_chains(active_rules, table)
             rules = self._filter_rules(active_rules, table)
             # Go over default policies and check if they are all ACCEPT.
@@ -471,7 +477,8 @@ class Iptables:
                 if not re.search(r'\bACCEPT\b', line):
                     needs_flush = True
                     break
-            # If there is at least one rule or custom chain, that means we need flush.
+            # If there is at least one rule or custom chain,
+            # that means we need flush.
             if len(chains) > 0 or len(rules) > 0:
                 needs_flush = True
         return needs_flush
@@ -517,11 +524,12 @@ class Iptables:
     def _refresh_active_rules(self, table):
         if table == '*':
             for tbl in Iptables.TABLES:
-                self._set_active_rules(tbl, self._get_system_active_rules(tbl))
+                self._set_active_rules(tbl, self._get_system_active_rules(tbl)) # noqa
         else:
-            self._set_active_rules(table, self._get_system_active_rules(table))
+            self._set_active_rules(table, self._get_system_active_rules(table)) # noqa
 
-    # Get iptables-save dump of active rules of one or all tables (pass '*') and return it as a string.
+    # Get iptables-save dump of active rules of
+    # one or all tables (pass '*') and return it as a string.
     def _get_system_active_rules(self, table):
         active_tables = self._get_list_of_active_tables()
         if table == '*':
@@ -551,7 +559,7 @@ class Iptables:
         cleaned_rules = []
         for line in rules.splitlines():
             # Remove lines with comments and empty lines.
-            if not (Iptables.is_comment(line) or Iptables.is_empty_line(line)):
+            if not (Iptables.is_comment(line) or Iptables.is_empty_line(line)): # noqa
                 cleaned_rules.append(line)
         return '\n'.join(cleaned_rules)
 
@@ -569,7 +577,7 @@ class Iptables:
     @staticmethod
     def is_default_chain(line, table):
         default_chains = Iptables.DEFAULT_CHAINS[table]
-        if re.match(r'\s*(:|(-P|--policy)\s+)\b(' + '|'.join(default_chains) + r')\b\s+(ACCEPT|DROP)', line):
+        if re.match(r'\s*(:|(-P|--policy)\s+)\b(' + '|'.join(default_chains) + r')\b\s+(ACCEPT|DROP)', line): # noqa
             return True
         else:
             return False
@@ -577,7 +585,8 @@ class Iptables:
     # Checks if a line is an iptables rule.
     @staticmethod
     def is_rule(line):
-        # We should only allow adding rules with '-A/--append', since others don't make any sense.
+        # We should only allow adding rules with '-A/--append',
+        # since others don't make any sense.
         if re.match(r'\s*(-A|--append)\s+[^\s]+', line):
             return True
         else:
@@ -602,21 +611,21 @@ class Iptables:
     # Return name of custom chain from the rule.
     def _get_custom_chain_name(self, line, table):
         if Iptables.is_custom_chain(line, table):
-            return re.match(r'\s*(:|(-N|--new-chain)\s+)([^\s]+)', line).group(3)
+            return re.match(r'\s*(:|(-N|--new-chain)\s+)([^\s]+)', line).group(3) # noqa
         else:
             return ''
 
     # Return name of default chain from the rule.
     def _get_default_chain_name(self, line, table):
         if Iptables.is_default_chain(line, table):
-            return re.match(r'\s*(:|(-N|--new-chain)\s+)([^\s]+)', line).group(3)
+            return re.match(r'\s*(:|(-N|--new-chain)\s+)([^\s]+)', line).group(3) # noqa
         else:
             return ''
 
     # Return target of the default chain from the rule.
     def _get_default_chain_target(self, line, table):
         if Iptables.is_default_chain(line, table):
-            return re.match(r'\s*(:|(-N|--new-chain)\s+)([^\s]+)\s+([A-Z]+)', line).group(4)
+            return re.match(r'\s*(:|(-N|--new-chain)\s+)([^\s]+)\s+([A-Z]+)', line).group(4) # noqa
         else:
             return ''
 
@@ -635,16 +644,18 @@ class Iptables:
                 all_rules.append(line)
         return '\n'.join(all_rules)
 
-    # Returns current iptables-save dump cleaned from comments and packet/byte counters.
+    # Returns current iptables-save dump cleaned
+    # from comments and packet/byte counters.
     def _clean_save_dump(self, simple_rules):
         cleaned_dump = []
         for line in simple_rules.splitlines():
             # Ignore comments.
             if Iptables.is_comment(line):
                 continue
-            # Reset counters for chains (begin with ':'), for easier comparing later on.
+            # Reset counters for chains (begin with ':'),
+            # for easier comparing later on.
             if re.match(r'\s*:', line):
-                cleaned_dump.append(re.sub(r'\[([0-9]+):([0-9]+)\]', '[0:0]', line))
+                cleaned_dump.append(re.sub(r'\[([0-9]+):([0-9]+)\]', '[0:0]', line)) # noqa
             else:
                 cleaned_dump.append(line)
         cleaned_dump.append('\n')
@@ -659,29 +670,33 @@ class Iptables:
         return '\n'.join(chains)
 
     # Returns lines with iptables rules from an iptables-save table dump
-    # (removes chain policies, custom chains, comments and everything else). By
-    # default returns all rules, if 'only_unmanged=True' returns rules which
-    # are not managed by Ansible.
+    # (removes chain policies, custom chains, comments and everything else).
+    # By default returns all rules, if 'only_unmanged=True'
+    # returns rules which are not managed by Ansible.
     def _filter_rules(self, rules, table, only_unmanaged=False):
         filtered_rules = []
         for line in rules.splitlines():
             if Iptables.is_rule(line):
                 if only_unmanaged:
                     tokens = self._split_rule_into_tokens(line)
-                    # We need to check if a rule has a comment which starts with 'ansible[name]'
+                    # We need to check if a rule has a comment
+                    # which starts with 'ansible[name]'
                     if '--comment' in tokens:
                         comment_index = tokens.index('--comment') + 1
                         if comment_index < len(tokens):
                             # Fetch the comment
                             comment = tokens[comment_index]
-                            # Skip the rule if the comment starts with 'ansible[name]'
-                            if not re.match(r'ansible\[[' + Iptables.RULE_NAME_ALLOWED_CHARS + r']+\]', comment):
+                            # Skip the rule if the comment
+                            # starts with 'ansible[name]'
+                            if not re.match(r'ansible\[[' + Iptables.RULE_NAME_ALLOWED_CHARS + r']+\]', comment): # noqa
                                 filtered_rules.append(line)
                         else:
-                            # Fail if there is no comment after the --comment parameter
+                            # Fail if there is no comment after
+                            # the --comment parameter
                             msg = "Iptables rule is missing a comment after the '--comment' parameter:\n%s" % line
                             Iptables.module.fail_json(msg=msg)
-                    # If it doesn't have comment, this means it is not managed by Ansible and we should append it.
+                    # If it doesn't have comment, this means
+                    # it is not managed by Ansible and we should append it.
                     else:
                         filtered_rules.append(line)
                 else:
@@ -691,12 +706,14 @@ class Iptables:
     # Same as _filter_rules(), but returns custom chains
     def _filter_custom_chains(self, rules, table, only_unmanaged=False):
         filtered_chains = []
-        # Get list of managed custom chains, which is needed to detect unmanaged custom chains
+        # Get list of managed custom chains,
+        # which is needed to detect unmanaged custom chains
         managed_custom_chains_list = self._get_custom_chains_list(table)
         for line in rules.splitlines():
             if Iptables.is_custom_chain(line, table):
                 if only_unmanaged:
-                    # The chain is not managed by this module if it's not in the list of managed custom chains.
+                    # The chain is not managed by this module
+                    # if it's not in the list of managed custom chains.
                     chain_name = self._get_custom_chain_name(line, table)
                     if chain_name not in managed_custom_chains_list:
                         filtered_chains.append(line)
@@ -708,7 +725,8 @@ class Iptables:
     def _get_custom_chains_list(self, table):
         custom_chains_list = []
         for key, value in self._get_table_rules_dict(table).items():
-            # Ignore UNMANAGED_RULES_KEY_NAME key, since we only want managed custom chains.
+            # Ignore UNMANAGED_RULES_KEY_NAME key, since
+            # we only want managed custom chains.
             if key != Iptables.UNMANAGED_RULES_KEY_NAME:
                 for line in value['rules'].splitlines():
                     if Iptables.is_custom_chain(line, table):
@@ -722,24 +740,29 @@ class Iptables:
     def _prepend_ansible_comment(self, rules, name):
         commented_lines = []
         for line in rules.splitlines():
-            # Extract rules only since we cannot add comments to custom chains.
+            # Extract rules only since we cannot
+            # add comments to custom chains.
             if Iptables.is_rule(line):
                 tokens = self._split_rule_into_tokens(line)
                 if '--comment' in tokens:
-                    # If there is a comment parameter, we need to prepand 'ansible[name]: '.
+                    # If there is a comment parameter,
+                    # we need to prepand 'ansible[name]: '.
                     comment_index = tokens.index('--comment') + 1
                     if comment_index < len(tokens):
-                        # We need to remove double quotes from comments, since there
+                        # We need to remove double quotes
+                        # from comments, since there
                         # is an incompatiblity with older iptables versions
                         comment_text = tokens[comment_index].replace('"', '')
                         tokens[comment_index] = 'ansible[' + name + ']: ' + comment_text
                     else:
-                        # Fail if there is no comment after the --comment parameter
+                        # Fail if there is no comment
+                        # after the --comment parameter
                         msg = "Iptables rule is missing a comment after the '--comment' parameter:\n%s" % line
                         Iptables.module.fail_json(msg=msg)
                 else:
-                    # If comment doesn't exist, we add a comment 'ansible[name]'
-                    tokens += ['-m', 'comment', '--comment', 'ansible[' + name + ']']
+                    # If comment doesn't exist, we
+                    # add a comment 'ansible[name]'
+                    tokens += ['-m', 'comment', '--comment', 'ansible[' + name + ']'] # noqa
                 # Escape and quote tokens in case they have spaces
                 tokens = [self._escape_and_quote_string(x) for x in tokens]
                 commented_lines.append(" ".join(tokens))
@@ -757,19 +780,20 @@ class Iptables:
             return escaped
 
     # Add table rule to the state_dict.
-    def add_table_rule(self, table, name, weight, rules, prepend_ansible_comment=True):
+    def add_table_rule(self, table, name, weight, rules, prepend_ansible_comment=True): # noqa
         self._fail_on_bad_rules(rules, table)
         if prepend_ansible_comment:
-            self.state_dict[table]['rules_dict'][name] = {'weight': weight, 'rules': self._prepend_ansible_comment(rules, name)}
+            self.state_dict[table]['rules_dict'][name] = {'weight': weight, 'rules':  self._prepend_ansible_comment(rules, name)} # noqa
         else:
-            self.state_dict[table]['rules_dict'][name] = {'weight': weight, 'rules': rules}
+            self.state_dict[table]['rules_dict'][name] = {'weight': weight, 'rules': rules} # noqa
 
     # Remove table rule from the state_dict.
     def remove_table_rule(self, table, name):
         if name in self.state_dict[table]['rules_dict']:
             del self.state_dict[table]['rules_dict'][name]
 
-    # TODO: Add sorting of rules so that diffs in check_mode look nicer and easier to follow.
+    # TODO: Add sorting of rules so that diffs in check_
+    # mode look nicer and easier to follow.
     #       Sorting would be done from top to bottom like this:
     #        * default chain policies
     #        * custom chains
@@ -785,26 +809,28 @@ class Iptables:
         default_chain_policies = []
         dict_rules = self._get_table_rules_dict(table)
         # Return list of rule names sorted by ('weight', 'rules') tuple.
-        for rule_name in sorted(dict_rules, key=lambda x: (dict_rules[x]['weight'], dict_rules[x]['rules'])):
+        for rule_name in sorted(dict_rules, key=lambda x: (dict_rules[x]['weight'], dict_rules[x]['rules'])): # noqa
             rules = dict_rules[rule_name]['rules']
             # Fail if some of the rules are bad
             self._fail_on_bad_rules(rules, table)
             rules_list.append(self._filter_rules(rules, table))
-            custom_chains_list.append(self._filter_custom_chains(rules, table))
-            default_chain_policies.append(self._filter_default_chain_policies(rules, table))
+            custom_chains_list.append(self._filter_custom_chains(rules, table)) # noqa
+            default_chain_policies.append(self._filter_default_chain_policies(rules, table)) # noqa
         # Clean up empty strings from these two lists.
         rules_list = list(filter(None, rules_list))
         custom_chains_list = list(filter(None, custom_chains_list))
         default_chain_policies = list(filter(None, default_chain_policies))
         if default_chain_policies:
-            # Since iptables-restore applies the last chain policy it reads, we
-            # have to reverse the order of chain policies so that those with
+            # Since iptables-restore applies
+            # the last chain policy it reads, we
+            # have to reverse the order of chain
+            # policies so that those with
             # the lowest weight (higher priority) are read last.
-            generated_rules += '\n'.join(reversed(default_chain_policies)) + '\n'
+            generated_rules += '\n'.join(reversed(default_chain_policies)) + '\n' # noqa
         if custom_chains_list:
             # We remove duplicate custom chains so that iptables-restore
             # doesn't fail because of that.
-            generated_rules += self._remove_duplicate_custom_chains('\n'.join(sorted(custom_chains_list)), table) + '\n'
+            generated_rules += self._remove_duplicate_custom_chains('\n'.join(sorted(custom_chains_list)), table) + '\n' # noqa
         if rules_list:
             generated_rules += '\n'.join(rules_list) + '\n'
         generated_rules += 'COMMIT\n'
@@ -812,7 +838,7 @@ class Iptables:
 
     # Sets unmanaged rules for the passed table in the state_dict.
     def _set_unmanaged_rules(self, table, rules):
-        self.add_table_rule(table, Iptables.UNMANAGED_RULES_KEY_NAME, 90, rules, prepend_ansible_comment=False)
+        self.add_table_rule(table, Iptables.UNMANAGED_RULES_KEY_NAME, 90, rules, prepend_ansible_comment=False) # noqa
 
     # Clears unmanaged rules of a table.
     def clear_unmanaged_rules(self, table):
@@ -823,30 +849,30 @@ class Iptables:
         # Get active iptables rules and clean them up.
         active_rules = self._get_active_rules(table)
         unmanaged_chains_and_rules = []
-        unmanaged_chains_and_rules.append(self._filter_custom_chains(active_rules, table, only_unmanaged=True))
-        unmanaged_chains_and_rules.append(self._filter_rules(active_rules, table, only_unmanaged=True))
+        unmanaged_chains_and_rules.append(self._filter_custom_chains(active_rules, table, only_unmanaged=True)) # noqa
+        unmanaged_chains_and_rules.append(self._filter_rules(active_rules, table, only_unmanaged=True)) # noqa
         # Clean items which are empty strings
-        unmanaged_chains_and_rules = list(filter(None, unmanaged_chains_and_rules))
-        self._set_unmanaged_rules(table, '\n'.join(unmanaged_chains_and_rules))
+        unmanaged_chains_and_rules = list(filter(None, unmanaged_chains_and_rules)) # noqa
+        self._set_unmanaged_rules(table, '\n'.join(unmanaged_chains_and_rules)) # noqa
 
     # Check if there are bad lines in the specified rules.
     def _fail_on_bad_rules(self, rules, table):
         for line in rules.splitlines():
             tokens = self._split_rule_into_tokens(line)
             if '-t' in tokens or '--table' in tokens:
-                msg = ("Iptables rules cannot contain '-t/--table' parameter. "
-                       "You should use the 'table' parameter of the module to set rules "
+                msg = ("Iptables rules cannot contain '-t/--table' parameter. " # noqa
+                       "You should use the 'table' parameter of the module to set  rules " # noqa
                        "for a specific table.")
                 Iptables.module.fail_json(msg=msg)
             # Fail if the parameter --comment doesn't have a comment after
-            if '--comment' in tokens and len(tokens) <= tokens.index('--comment') + 1:
-                msg = "Iptables rule is missing a comment after the '--comment' parameter:\n%s" % line
+            if '--comment' in tokens and len(tokens) <= tokens.index('--comment') + 1: # noqa
+                msg = "Iptables rule is missing a comment after the '--comment' parameter:\n%s" % line # noqa
                 Iptables.module.fail_json(msg=msg)
             if not (Iptables.is_rule(line) or
                     Iptables.is_custom_chain(line, table) or
                     Iptables.is_default_chain(line, table) or
                     Iptables.is_comment(line)):
-                msg = ("Bad iptables rule '%s'! You can only use -A/--append, -N/--new-chain "
+                msg = ("Bad iptables rule '%s'! You can only use -A/--append, -N/--new-chain " # noqa
                        "and -P/--policy to specify rules." % line)
                 Iptables.module.fail_json(msg=msg)
 
@@ -933,7 +959,7 @@ class Iptables:
     # Saves state file and system iptables rules.
     def system_save(self, backup=False):
         self._system_save_active(backup=backup)
-        rules = json.dumps(self.state_dict, sort_keys=True, indent=4, separators=(',', ': '))
+        rules = json.dumps(self.state_dict, sort_keys=True, indent=4, separators=(',', ': ')) # noqa
         self._write_rules_to_file(rules, self.state_save_path)
 
 
@@ -964,7 +990,7 @@ def main():
     backup = module.params['backup']
     keep_unmanaged = module.params['keep_unmanaged']
 
-    kw = dict(state=state, name=name, rules=rules, weight=weight, ipversion=ipversion,
+    kw = dict(state=state, name=name, rules=rules, weight=weight, ipversion=ipversion, # noqa
               table=table, backup=backup, keep_unmanaged=keep_unmanaged)
 
     iptables = Iptables(module, ipversion)
@@ -978,18 +1004,18 @@ def main():
 
     # Check additional parameter requirements
     if state == 'present' and name == '*':
-        module.fail_json(msg="Parameter 'name' can only be '*' if 'state=absent'")
+        module.fail_json(msg="Parameter 'name' can only be '*' if 'state=absent'") # noqa
     if state == 'present' and table == '*':
-        module.fail_json(msg="Parameter 'table' can only be '*' if 'name=*' and 'state=absent'")
+        module.fail_json(msg="Parameter 'table' can only be '*' if 'name=*' and 'state=absent'") # noqa
     if state == 'present' and not name:
         module.fail_json(msg="Parameter 'name' cannot be empty")
-    if state == 'present' and not re.match('^[' + Iptables.RULE_NAME_ALLOWED_CHARS + ']+$', name):
-        module.fail_json(msg="Parameter 'name' not valid! It can only contain alphanumeric characters, "
-                             "underscore, hyphen, or a space, got: '%s'" % name)
+    if state == 'present' and not re.match('^[' + Iptables.RULE_NAME_ALLOWED_CHARS + ']+$', name): # noqa
+        module.fail_json(msg="Parameter 'name' not valid! It can only contain alphanumeric characters, " # noqa
+                             "underscore, hyphen, or a space, got: '%s'" % name) # noqa
     if weight < 0 or weight > 99:
-        module.fail_json(msg="Parameter 'weight' can be 0-99, got: %d" % weight)
+        module.fail_json(msg="Parameter 'weight' can be 0-99, got: %d" % weight) # noqa
     if state == 'present' and rules == '':
-        module.fail_json(msg="Parameter 'rules' cannot be empty when 'state=present'")
+        module.fail_json(msg="Parameter 'rules' cannot be empty when 'state=present'") # noqa
 
     # Flush rules of one or all tables
     if state == 'absent' and name == '*':
@@ -1031,21 +1057,24 @@ def main():
 
         if check_mode:
             # Create a predicted diff for check_mode.
-            # Diff will be created from rules generated from the state dictionary.
+            # Diff will be created from rules generated
+            # from the state dictionary.
             if hasattr(module, '_diff') and module._diff:
-                # Update unmanaged rules in the old object so the generated diff
+                # Update unmanaged rules in the old
+                # object so the generated diff
                 # from the rules dictionaries is more accurate.
                 iptables.refresh_unmanaged_rules(table)
                 # Generate table rules from rules dictionaries.
                 table_rules_old = iptables.get_table_rules(table)
                 table_rules_new = iptables_new.get_table_rules(table)
-                # If rules generated from dicts are not equal, we generate a diff from them.
+                # If rules generated from dicts are not equal
+                # we generate a diff from them.
                 if table_rules_old != table_rules_new:
-                    kw['diff'] = generate_diff(table_rules_old, table_rules_new)
+                    kw['diff'] = generate_diff(table_rules_old, table_rules_new) # noqa
                 else:
                     # TODO: Update this comment to be better.
-                    kw['diff'] = {'prepared': "System rules were not changed (e.g. rule "
-                                              "weight changed, redundant rule, etc)"}
+                    kw['diff'] = {'prepared': "System rules were not changed (e.g. rule " # noqa
+                                              "weight changed, redundant rule, etc)"} # noqa
         else:
             # We need to fetch active table dump before we apply new rules
             # since we will need them to generate a diff.
@@ -1062,13 +1091,13 @@ def main():
 
             # Generate a diff.
             if hasattr(module, '_diff') and module._diff:
-                table_active_rules_new = iptables_new.get_saved_table_dump(table)
+                table_active_rules_new = iptables_new.get_saved_table_dump(table) # noqa
                 if table_active_rules != table_active_rules_new:
-                    kw['diff'] = generate_diff(table_active_rules, table_active_rules_new)
+                    kw['diff'] = generate_diff(table_active_rules, table_active_rules_new) # noqa
                 else:
                     # TODO: Update this comment to be better.
-                    kw['diff'] = {'prepared': "System rules were not changed (e.g. rule "
-                                              "weight changed, redundant rule, etc)"}
+                    kw['diff'] = {'prepared': "System rules were not changed (e.g. rule " # noqa
+                                              "weight changed, redundant rule, etc)"} # noqa
 
     kw['changed'] = changed
     module.exit_json(**kw)
