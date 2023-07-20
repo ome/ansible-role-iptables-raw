@@ -252,7 +252,7 @@ def compare_dictionaries(dict1, dict2):
     if not (isinstance(dict1, dict) and isinstance(dict2, dict)):
         return False
     shared_keys = set(dict2.keys()) & set(dict2.keys())
-    if not (len(shared_keys) == len(dict1.keys()) and len(shared_keys) == len(dict2.keys())):
+    if not (len(shared_keys) == len(dict1.keys()) and len(shared_keys) == len(dict2.keys())): # noqa
         return False
     dicts_are_equal = True
     for key in dict1.keys():
