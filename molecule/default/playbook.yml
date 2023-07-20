@@ -2,7 +2,7 @@
 - name: Converge
   hosts: all
   roles:
-    - role: ansible-role-iptables-raw
+    - role: ome.iptables_raw
 
   tasks:
     # - allow established/related inbound/outbound
