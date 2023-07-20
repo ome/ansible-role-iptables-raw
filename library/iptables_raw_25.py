@@ -363,7 +363,7 @@ class Iptables:
         if self._is_debian():
             # Check if iptables-persistent packages is installed
             if not os.path.isdir('/etc/iptables'):
-                Iptables.module.fail_json(msg="This module requires 'iptables-persistent' package!")
+                Iptables.module.fail_json(msg="This module requires 'iptables-persistent' package!") # noqa
             if ipversion == '4':
                 return '/etc/iptables/rules.v4'
             else:
@@ -413,11 +413,11 @@ class Iptables:
         if os.path.isfile(self.state_save_path):
             try:
                 json_str = open(self.state_save_path, 'r').read()
-            except:
+            except: # noqa
                 Iptables.module.fail_json(msg="Could not read the state file '%s'!" % self.state_save_path) # noqa
         try:
             read_dict = defaultdict(lambda: dict(dump='', rules_dict={}), json.loads(json_str)) # noqa
-        except:
+        except: # noqa
             Iptables.module.fail_json(msg="Could not parse the state file '%s'! Please manually delete it to continue." % self.state_save_path) # noqa
         return read_dict
 
@@ -549,7 +549,7 @@ class Iptables:
     def _split_rule_into_tokens(self, rule):
         try:
             return shlex.split(rule, comments=True)
-        except:
+        except: # noqa
             msg = "Could not parse the iptables rule:\n%s" % rule
             Iptables.module.fail_json(msg=msg)
 
@@ -568,7 +568,7 @@ class Iptables:
     def is_custom_chain(line, table):
         default_chains = Iptables.DEFAULT_CHAINS[table]
         if re.match(r'\s*(:|(-N|--new-chain)\s+)[^\s]+', line) \
-           and not re.match(r'\s*(:|(-N|--new-chain)\s+)\b(' + '|'.join(default_chains) + r')\b', line):
+           and not re.match(r'\s*(:|(-N|--new-chain)\s+)\b(' + '|'.join(default_chains) + r')\b', line): # noqa
             return True
         else:
             return False
@@ -693,7 +693,7 @@ class Iptables:
                         else:
                             # Fail if there is no comment after
                             # the --comment parameter
-                            msg = "Iptables rule is missing a comment after the '--comment' parameter:\n%s" % line
+                            msg = "Iptables rule is missing a comment after the '--comment' parameter:\n%s" % line # noqa
                             Iptables.module.fail_json(msg=msg)
                     # If it doesn't have comment, this means
                     # it is not managed by Ansible and we should append it.
@@ -753,11 +753,11 @@ class Iptables:
                         # from comments, since there
                         # is an incompatiblity with older iptables versions
                         comment_text = tokens[comment_index].replace('"', '')
-                        tokens[comment_index] = 'ansible[' + name + ']: ' + comment_text
+                        tokens[comment_index] = 'ansible[' + name + ']: ' + comment_text # noqa
                     else:
                         # Fail if there is no comment
                         # after the --comment parameter
-                        msg = "Iptables rule is missing a comment after the '--comment' parameter:\n%s" % line
+                        msg = "Iptables rule is missing a comment after the '--comment' parameter:\n%s" % line # noqa
                         Iptables.module.fail_json(msg=msg)
                 else:
                     # If comment doesn't exist, we
@@ -967,11 +967,11 @@ def main():
 
     module = AnsibleModule(
         argument_spec=dict(
-            ipversion=dict(required=False, choices=["4", "6"], type='str', default="4"),
-            state=dict(required=False, choices=['present', 'absent'], default='present', type='str'),
+            ipversion=dict(required=False, choices=["4", "6"], type='str', default="4"), # noqa
+            state=dict(required=False, choices=['present', 'absent'], default='present', type='str'), # noqa
             weight=dict(required=False, type='int', default=40),
             name=dict(required=True, type='str'),
-            table=dict(required=False, choices=Iptables.TABLES + ['*'], default="filter", type='str'),
+            table=dict(required=False, choices=Iptables.TABLES + ['*'], default="filter", type='str'), # noqa
             rules=dict(required=False, type='str', default=""),
             backup=dict(required=False, type='bool', default=False),
             keep_unmanaged=dict(required=False, type='bool', default=True),
