@@ -9,6 +9,7 @@ galaxy_info:
     - name: EL
       versions:
         - 7
+  namespace: ome
   role_name: iptables_raw
   galaxy_tags: []
 

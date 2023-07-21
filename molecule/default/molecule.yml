@@ -3,8 +3,10 @@ dependency:
   name: galaxy
 driver:
   name: docker
-lint:
-  name: yamllint
+lint: |
+    yamllint .
+    ansible-lint
+    flake8
 platforms:
   - name: iptables-raw
     image: centos/systemd
@@ -16,5 +18,3 @@ provisioner:
     name: ansible-lint
 verifier:
   name: testinfra
-  lint:
-    name: flake8
