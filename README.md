@@ -46,7 +46,7 @@ Example Playbook
 
     - hosts: localhost
       roles:
-        - role: ome.iptables-raw
+        - role: ome.iptables_raw
 
       tasks:
         # Block all incoming connections apart from ssh
