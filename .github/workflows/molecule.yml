@@ -41,7 +41,7 @@ jobs:
       - name: Run molecule
         run: molecule test -s "${{ matrix.scenario }}"
 
-    publish:
+  publish:
     name: Galaxy
     if: startsWith(github.ref, 'refs/tags')
     needs:
