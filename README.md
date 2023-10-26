@@ -1,7 +1,7 @@
 Iptables Raw
 ============
 
-[![Actions Status](https://github.com/ome/ansible-iptables-raw/workflows/Molecule/badge.svg)](https://github.com/ome/ansible-role-iptables-raw/actions)
+[![Actions Status](https://github.com/ome/ansible-role-iptables-raw/workflows/Molecule/badge.svg)](https://github.com/ome/ansible-role-iptables-raw/actions)
 [![Ansible Role](https://img.shields.io/badge/ansible--galaxy-iptables_raw-blue.svg)](https://galaxy.ansible.com/ui/standalone/roles/ome/iptables_raw/)
 
 Import the Iptables Raw library and make it available as a task.
