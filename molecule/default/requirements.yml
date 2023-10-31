@@ -1,4 +1,0 @@
----
-- name: iptables_raw
-  src: https://github.com/pwalczysko/ansible-role-iptables-raw/
-  version: rocky9
