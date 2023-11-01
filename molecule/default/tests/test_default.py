@@ -23,4 +23,4 @@ def test_http_block(host):
 
 def test_https_allow(host):
     out = host.check_output('curl -f -I https://www.openmicroscopy.org')
-    assert 'HTTP/1.1 200' in out
+    assert 'HTTP/2 200' in out

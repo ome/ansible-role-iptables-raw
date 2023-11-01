@@ -3,7 +3,8 @@
 
 - name: iptables-raw | install iptables services
   become: true
-  yum:
+  ansible.builtin.dnf:
+    update_cache: true
     name: iptables-services
     state: present
 
